@@ -87,9 +87,18 @@
         android:text="Iniciar Sesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/logIn"
+        android:layout_below="@+id/editPassword"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="14dp"
-        android:id="@+id/logIn" />
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:id="@+id/textView2" />
 
 </RelativeLayout>

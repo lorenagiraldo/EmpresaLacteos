@@ -1,10 +1,12 @@
 package com.example.lorena.empresalacteos;
 
+import java.io.Serializable;
+
 /**
  * Created by JORGE_ALEJANDRO on 18/09/2017.
  */
 
-public class Userl {
+public class Userl implements Serializable {
     private int userlId;
     private String userlDocument;
     private String userlName;
