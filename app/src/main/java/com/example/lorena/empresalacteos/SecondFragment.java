@@ -1,6 +1,5 @@
 package com.example.lorena.empresalacteos;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,17 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 
 /**
@@ -41,13 +34,16 @@ public class SecondFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private ArrayList<Product> products;
-    private ArrayList<String> listProducts;
-    private ArrayAdapter<String> adapter;
-    private ListView listviewProducts;
-    private Button buttonProductDelete;
-    private EditText editProductDelete;
-    private TextView textProductDelete;
+    private Button botonRegistrarFactura;
+    private EditText editCodigoFactura;
+    private EditText editNombreFactura;
+    private EditText editCantidadFactura;
+    private EditText editValoruFactura;
+    private EditText editValortFactura;
+    private TextView textSucesoFactura;
+
+    public Factura facturaG=null;
+
 
     public SecondFragment() {
         // Required empty public constructor
@@ -85,18 +81,25 @@ public class SecondFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_second, container, false);
-        listviewProducts=(ListView)view.findViewById(R.id.listviewProducts);
-        productShow(view);
-        textProductDelete=(TextView) view.findViewById(R.id.textProductDelete);
-        editProductDelete=(EditText)view.findViewById(R.id.editProductDelete);
-        buttonProductDelete=(Button)view.findViewById(R.id.buttonProductDelete);
-        buttonProductDelete.setOnClickListener(new View.OnClickListener() {
+        editCodigoFactura=(EditText) view.findViewById(R.id.editCodigoFactura);
+        editNombreFactura=(EditText)view.findViewById(R.id.editNombreFactura);
+        editCantidadFactura=(EditText)view.findViewById(R.id.editCantidadFactura);
+        editValoruFactura=(EditText)view.findViewById(R.id.editValoruFactura);
+        editValortFactura=(EditText)view.findViewById(R.id.editValortFactura);
+        textSucesoFactura=(TextView) view.findViewById(R.id.textSucesoFactura);
+
+        editCodigoFactura.setText(FirstFragment.pedidoG.getCodigo());
+        //editNombreFactura.setText(FirstFragment.pedidoG.getNombre());
+        editCantidadFactura.setText(FirstFragment.pedidoG.getCantidad());
+
+        botonRegistrarFactura=(Button)view.findViewById(R.id.botonRegistrarFactura);
+        botonRegistrarFactura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String productCode = editProductDelete.getText().toString();
-                Product product=new Product(-1, productCode, null, -1, -1);
-                productDelete(product);
-                textProductDelete.setText("Del: "+productCode);
+                int valoru=Integer.parseInt(editValoruFactura.getText().toString());
+                int valort=Integer.parseInt(editValortFactura.getText().toString());
+                Factura factura=new Factura(valoru,valort,Main2Activity.usuarioG.getDocumento());
+                registrarFactura(factura);
             }
         });
         return view;
@@ -125,43 +128,22 @@ public class SecondFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void productShow(View view)
+    public void registrarFactura(Factura factura)
     {
         try {
-            String url = "http://"+Session.ip+"/EmpresaLacteosServidor/rest/services/productShow";
-            String response =new WSC().execute(url).get();
-            Gson json= new Gson();
-            Type type=new TypeToken<ArrayList<Product>>() {}.getType();
-            products=json.fromJson(response,type);
-            listProducts=new ArrayList<>();
-            listProducts.add("CODIGO / NOMBRE / PRECIO");
-            for (int i=0; i<products.size();i++)
-            {
-                listProducts.add(products.get(i).getProductCode()+" / "+products.get(i).getProductName()+" / "+products.get(i).getProductPrice());
-            }
-            adapter =new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, listProducts);
-            listviewProducts.setAdapter(adapter);
-        }catch(Exception ex)
-        {
-            Log.d("Error", "Exception: "+ex.toString());
-        }
-    }
-
-    public void productDelete(Product product)
-    {
-        try {
-            if (product.getProductCode().equals("")) {
-                textProductDelete.setText("Error campos vacios");
+            if (factura.getValoru()==0 || factura.getValort()==0 || factura.getDocumentoUsuario().equals("")) {
+                textSucesoFactura.setText("Error campos vacios");
             } else {
 
-                String url = "http://"+Session.ip+"/EmpresaLacteosServidor/rest/services/productDelete/" + product.getProductCode();
+                String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/registrarFactura/" + factura.getValoru() + "/" + factura.getValort()+"/"+factura.getDocumentoUsuario();
                 String response =new WSC().execute(url).get();
                 Gson json=new Gson();
                 String message=json.fromJson(response, String.class);
                 if (message.equals("Success")) {
-                    textProductDelete.setText("registrado: "+product.getProductName());
+                    textSucesoFactura.setText("registrada: Factura");
+                    facturaG=factura;
                 } else {
-                    textProductDelete.setText("Error al registrar producto");
+                    textSucesoFactura.setText("Error al registrar Factura");
                 }
             }
         }catch(Exception ex)

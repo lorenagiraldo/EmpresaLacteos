@@ -22,7 +22,8 @@
         <activity
             android:name=".EnterpriseActivity"
             android:label="@string/title_activity_enterprise"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Main2Activity"></activity>
     </application>
 
 </manifest>

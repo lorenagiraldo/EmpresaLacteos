@@ -34,12 +34,12 @@ public class FirstFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private EditText editProductCode;
-    private EditText editProductName;
-    private EditText editProductPrice;
-    private EditText editProductQuantity;
-    private TextView textProductSuccess;
-    private Button buttonProductRegister;
+    private EditText editNombrePedido;
+    private EditText editCodigoPedido;
+    private EditText editCantidadPedido;
+    private TextView textSucesoPedido;
+    private Button botonRegistrarPedido;
+
 
     public FirstFragment() {
         // Required empty public constructor
@@ -77,21 +77,19 @@ public class FirstFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_first, container, false);
-        editProductCode=(EditText)view.findViewById(R.id.editProductCode);
-        editProductName=(EditText)view.findViewById(R.id.editProductName);
-        editProductPrice=(EditText)view.findViewById(R.id.editProductPrice);
-        editProductQuantity=(EditText)view.findViewById(R.id.editProductQuantity);
-        textProductSuccess=(TextView) view.findViewById(R.id.textProductSuccess);
-        buttonProductRegister=(Button)view.findViewById(R.id.buttonProductRegister);
-        buttonProductRegister.setOnClickListener(new View.OnClickListener() {
+        editCodigoPedido=(EditText) view.findViewById(R.id.editCodigoPedido);
+        editNombrePedido=(EditText) view.findViewById(R.id.editNombrePedido);
+        editCantidadPedido=(EditText) view.findViewById(R.id.editCantidadPedido);
+        textSucesoPedido=(TextView) view.findViewById(R.id.textSucesoPedido);
+        botonRegistrarPedido=(Button)view.findViewById(R.id.botonRegistrarPedido);
+        botonRegistrarPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String productCode = editProductCode.getText().toString();
-                String productName = editProductName.getText().toString();
-                int productPrice=Integer.parseInt(editProductPrice.getText().toString());
-                int productQuantity=Integer.parseInt(editProductQuantity.getText().toString());
-                Product product=new Product(-1, productCode, productName, productPrice, productQuantity);
-                productRegister(product);
+                String codigo=editCodigoPedido.getText().toString();
+                String nombre=editNombrePedido.getText().toString();
+                int cantidad=Integer.parseInt(editCantidadPedido.getText().toString());
+                Pedido pedido=new Pedido(-1,codigo,nombre,cantidad);
+                registrarPedido(pedido);
             }
         });
         return view;
@@ -120,21 +118,22 @@ public class FirstFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void productRegister(Product product)
+    public void registrarPedido(Pedido pedido)
     {
         try {
-            if (product.getProductCode().equals("") || product.getProductName().equals("")) {
-                textProductSuccess.setText("Error campos vacios");
+            if (pedido.getCodigo().equals("") || pedido.getCantidad()==0) {
+                textSucesoPedido.setText("Error campos vacios");
             } else {
 
-                String url = "http://"+Session.ip+"/EmpresaLacteosServidor/rest/services/productRegister/" + product.getProductCode() + "/" + product.getProductName()+"/"+product.getProductPrice()+"/"+product.getProductQuantity();
+                String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/registrarPedido/" + pedido.getCodigo() + "/" + pedido.getNombre()+"/"+pedido.getCantidad();
                 String response =new WSC().execute(url).get();
                 Gson json=new Gson();
                 String message=json.fromJson(response, String.class);
                 if (message.equals("Success")) {
-                    textProductSuccess.setText("registrado: "+product.getProductName());
+                    textSucesoPedido.setText("registrado: "+pedido.getNombre());
+                    Main2Activity.pedidoG=pedido;
                 } else {
-                    textProductSuccess.setText("Error al registrar producto");
+                    textSucesoPedido.setText("Error al registrar pedido");
                 }
             }
         }catch(Exception ex)

@@ -26,7 +26,6 @@ public class EnterpriseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    private Userl userl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,6 @@ public class EnterpriseActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        userl=(Userl)getIntent().getExtras().getSerializable("userl");
         loadFirstFragment();
 
     }

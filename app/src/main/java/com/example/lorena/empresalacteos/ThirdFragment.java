@@ -9,9 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 
 
 /**
@@ -34,12 +35,12 @@ public class ThirdFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private EditText editProductCodeUpdate;
-    private EditText editProductNameUpdate;
-    private EditText editProductPriceUpdate;
-    private EditText editProductQuantityUpdate;
-    private TextView textProductSuccessUpdate;
-    private Button buttonProductUpdate;
+    private EditText editDocumentoCartera;
+    private EditText editNombreCartera;
+    private EditText editDireccionCartera;
+    private EditText editTelefonoCartera;
+    private EditText editSaldoCartera;
+    private Button botonRegistrarFactura;
 
     public ThirdFragment() {
         // Required empty public constructor
@@ -77,23 +78,14 @@ public class ThirdFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_third, container, false);
-        editProductCodeUpdate=(EditText)view.findViewById(R.id.editProductCodeUpdate);
-        editProductNameUpdate=(EditText)view.findViewById(R.id.editProductNameUpdate);
-        editProductPriceUpdate=(EditText)view.findViewById(R.id.editProductPriceUpdate);
-        editProductQuantityUpdate=(EditText)view.findViewById(R.id.editProductQuantityUpdate);
-        textProductSuccessUpdate=(TextView) view.findViewById(R.id.textProductSuccessUpdate);
-        buttonProductUpdate=(Button)view.findViewById(R.id.buttonProductUpdate);
-        buttonProductUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String productCode = editProductCodeUpdate.getText().toString();
-                String productName = editProductNameUpdate.getText().toString();
-                int productPrice=Integer.parseInt(editProductPriceUpdate.getText().toString());
-                int productQuantity=Integer.parseInt(editProductQuantityUpdate.getText().toString());
-                Product product=new Product(-1, productCode, productName, productPrice, productQuantity);
-                productUpdate(product);
-            }
-        });
+        editDocumentoCartera=(EditText)view.findViewById(R.id.editDocumentoCartera);
+        editNombreCartera=(EditText)view.findViewById(R.id.editNombreCartera);
+        editDireccionCartera=(EditText)view.findViewById(R.id.editDireccionCartera);
+        editTelefonoCartera=(EditText)view.findViewById(R.id.editTelefonoCartera);
+        editSaldoCartera=(EditText)view.findViewById(R.id.editSaldoCartera);
+
+        mostrarCartera();
+        mostrarSaldoCartera();
         return view;
     }
 
@@ -119,26 +111,28 @@ public class ThirdFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void productUpdate(Product product)
-    {
+    public void mostrarSaldoCartera(){
         try {
-            if (product.getProductCode().equals("")) {
-                textProductSuccessUpdate.setText("Error campos vacios");
+            String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/mostrarSaldoCartera/" + Main2Activity.usuarioG.getDocumento();
+            String response =new WSC().execute(url).get();
+            Gson json=new Gson();
+            int saldo=json.fromJson(response, Integer.class);
+            if (saldo!=0) {
+                editSaldoCartera.setText(String.valueOf(saldo));
             } else {
-
-                String url = "http://"+Session.ip+"/EmpresaLacteosServidor/rest/services/productUpdate/" + product.getProductCode() + "/" + product.getProductName()+"/"+product.getProductPrice()+"/"+product.getProductQuantity();
-                String response =new WSC().execute(url).get();
-                Gson json=new Gson();
-                String message=json.fromJson(response, String.class);
-                if (message.equals("Success")) {
-                    textProductSuccessUpdate.setText("Actualizado: "+product.getProductCode());
-                } else {
-                    textProductSuccessUpdate.setText("Error al actualizar producto");
-                }
+                editSaldoCartera.setText("Error de saldo");
             }
         }catch(Exception ex)
         {
             Log.d("Error", "Exception: "+ex.toString());
         }
+   }
+
+    public void mostrarCartera()
+    {
+        editDocumentoCartera.setText(Main2Activity.usuarioG.getDocumento());
+        editNombreCartera.setText(Main2Activity.usuarioG.getNombre());
+        editDireccionCartera.setText(Main2Activity.usuarioG.getDireccion());
+        editTelefonoCartera.setText(Main2Activity.usuarioG.getTelefono());
     }
 }

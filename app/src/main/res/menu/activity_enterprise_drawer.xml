@@ -4,13 +4,13 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_fragment1"
-            android:title="Registrar Producto" />
+            android:title="Registrar pedido" />
         <item
             android:id="@+id/nav_fragment2"
-            android:title="Ver productos" />
+            android:title="Registrar factura" />
         <item
             android:id="@+id/nav_fragment3"
-            android:title="Modificar producto" />
+            android:title="Ver Cartera" />
     </group>
 
 </menu>

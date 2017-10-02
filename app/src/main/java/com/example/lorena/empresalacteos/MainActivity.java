@@ -12,33 +12,20 @@ import java.io.Serializable;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textView2;
-    private EditText editDocument;
-    private EditText editPassword;
-    private Button login;
+    private Button inicio;
+
+    public static String ip="192.168.1.57:8080";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView2=(TextView)findViewById(R.id.textView2);
-        editDocument=(EditText)findViewById(R.id.editDocument);
-        editPassword=(EditText)findViewById(R.id.editPassword);
-        login=(Button)findViewById(R.id.logIn);
-        final Session session= new Session();
-        login.setOnClickListener(new View.OnClickListener() {
+        inicio=(Button)findViewById(R.id.inicio);
+        inicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String document = editDocument.getText().toString();
-                String password = editPassword.getText().toString();
-                Userl userl=session.logIn(document, password, getApplicationContext());
-                if (userl!=null)
-                {
-                    //textView2.setText(userl.getUserlName());
-                    Intent i=new Intent(MainActivity.this,EnterpriseActivity.class);
-                    i.putExtra("userl", userl);
-                    startActivity(i);
-                }
+                Intent i=new Intent(MainActivity.this,Main2Activity.class);
+                startActivity(i);
             }
         });
     }

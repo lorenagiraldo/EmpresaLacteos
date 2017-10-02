@@ -8,105 +8,88 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="INGRESAR PRODUCTO"
+        android:text="INGRESO DEL PEDIDO"
+        android:layout_marginTop="22dp"
+        android:id="@+id/textView1"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:id="@+id/text1" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/editProductName"
-        android:layout_alignBaseline="@+id/textView6"
-        android:layout_alignBottom="@+id/textView6"
-        android:layout_alignStart="@+id/editProductCode" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Precio:"
+        android:text="Descripcion del producto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:id="@+id/textView7"
-        android:layout_below="@+id/editProductName"
-        android:layout_toStartOf="@+id/text1" />
-
-    <TextView
-        android:text="Cantidad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="51dp"
-        android:id="@+id/textView8"
-        android:layout_below="@+id/textView7"
-        android:layout_alignEnd="@+id/textView6" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:layout_below="@+id/editProductName"
-        android:layout_alignEnd="@+id/editProductName"
-        android:layout_marginTop="20dp"
-        android:id="@+id/editProductPrice" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:layout_below="@+id/editProductPrice"
-        android:layout_alignEnd="@+id/editProductPrice"
-        android:layout_marginTop="24dp"
-        android:id="@+id/editProductQuantity" />
-
-    <TextView
-        android:text="Código"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="39dp"
-        android:id="@+id/textView5"
-        android:layout_below="@+id/text1"
-        android:layout_toStartOf="@+id/text1" />
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="86dp"
+        android:id="@+id/textView2"
+        android:layout_toStartOf="@+id/textView1" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
         android:ems="10"
-        android:id="@+id/editProductCode"
-        android:layout_marginEnd="11dp"
-        android:layout_alignBaseline="@+id/textView5"
-        android:layout_alignBottom="@+id/textView5"
-        android:layout_alignParentEnd="true" />
+        android:id="@+id/editNombrePedido"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textSucesoPedido"
+        android:layout_alignStart="@+id/editCodigoPedido" />
 
-    <TextView
-        android:text="Nombre:"
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:id="@+id/textView6"
-        android:layout_below="@+id/editProductCode"
-        android:layout_alignEnd="@+id/textView7" />
+        android:ems="10"
+        android:layout_below="@+id/editNombrePedido"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="39dp"
+        android:id="@+id/editCodigoPedido"
+        android:inputType="text"
+        android:layout_toEndOf="@+id/botonRegistrarPedido"
+        android:layout_alignStart="@+id/editCantidadPedido" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_below="@+id/editCodigoPedido"
+        android:layout_marginTop="54dp"
+        android:id="@+id/editCantidadPedido"
+        android:inputType="number"
+        android:layout_alignStart="@+id/textSucesoPedido" />
+
+    <TextView
+        android:text="Cantidad solicitada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:layout_alignBaseline="@+id/editCantidadPedido"
+        android:layout_alignBottom="@+id/editCantidadPedido" />
+
+    <TextView
+        android:text="Codigo del producto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:layout_alignBaseline="@+id/editCodigoPedido"
+        android:layout_alignBottom="@+id/editCodigoPedido"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="N/A"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:id="@+id/textSucesoPedido"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
-        android:text="Añadir"
+        android:text="GUARDAR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/editProductQuantity"
-        android:layout_marginBottom="81dp"
-        android:id="@+id/buttonProductRegister" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="32dp"
-        android:id="@+id/textProductSuccess"
-        android:layout_alignEnd="@+id/text1"
-        android:layout_toEndOf="@+id/textView8" />
+        android:id="@+id/botonRegistrarPedido"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/editCantidadPedido"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
