@@ -15,34 +15,34 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="Descripcion del producto"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="86dp"
-        android:id="@+id/textView2"
-        android:layout_toStartOf="@+id/textView1" />
+        android:layout_toStartOf="@+id/textView1"
+        android:text="Codigo del producto" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
         android:ems="10"
-        android:id="@+id/editNombrePedido"
+        android:id="@+id/editCodigoPedido"
         android:layout_alignBaseline="@+id/textView2"
         android:layout_alignBottom="@+id/textView2"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textSucesoPedido"
-        android:layout_alignStart="@+id/editCodigoPedido" />
+        android:layout_alignStart="@+id/editNombrePedido" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:layout_below="@+id/editNombrePedido"
+        android:layout_below="@+id/editCodigoPedido"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="39dp"
-        android:id="@+id/editCodigoPedido"
+        android:id="@+id/editNombrePedido"
         android:inputType="text"
         android:layout_toEndOf="@+id/botonRegistrarPedido"
         android:layout_alignStart="@+id/editCantidadPedido" />
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:layout_below="@+id/editCodigoPedido"
+        android:layout_below="@+id/editNombrePedido"
         android:layout_marginTop="54dp"
         android:id="@+id/editCantidadPedido"
         android:inputType="number"
@@ -66,13 +66,13 @@
         android:layout_alignBottom="@+id/editCantidadPedido" />
 
     <TextView
-        android:text="Codigo del producto"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView3"
-        android:layout_alignBaseline="@+id/editCodigoPedido"
-        android:layout_alignBottom="@+id/editCodigoPedido"
-        android:layout_alignParentStart="true" />
+        android:layout_alignBaseline="@+id/editNombrePedido"
+        android:layout_alignBottom="@+id/editNombrePedido"
+        android:layout_alignParentStart="true"
+        android:text="Nombre del producto" />
 
     <TextView
         android:text="N/A"

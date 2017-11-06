@@ -7,12 +7,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,12 +41,10 @@ public class ThirdFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private EditText editDocumentoCartera;
-    private EditText editNombreCartera;
-    private EditText editDireccionCartera;
-    private EditText editTelefonoCartera;
-    private EditText editSaldoCartera;
-    private Button botonRegistrarFactura;
+    private ListView pedidosL;
+    private Spinner pedidoE;
+    private Button botonEliminarPedido;
+    private TextView textSucesoEliminarPedido;
 
     public ThirdFragment() {
         // Required empty public constructor
@@ -78,14 +82,31 @@ public class ThirdFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_third, container, false);
-        editDocumentoCartera=(EditText)view.findViewById(R.id.editDocumentoCartera);
-        editNombreCartera=(EditText)view.findViewById(R.id.editNombreCartera);
-        editDireccionCartera=(EditText)view.findViewById(R.id.editDireccionCartera);
-        editTelefonoCartera=(EditText)view.findViewById(R.id.editTelefonoCartera);
-        editSaldoCartera=(EditText)view.findViewById(R.id.editSaldoCartera);
-
-        mostrarCartera();
-        mostrarSaldoCartera();
+        textSucesoEliminarPedido=(TextView) view.findViewById(R.id.textSucesoEliminarPedido);
+        pedidosL=(ListView)view.findViewById(R.id.pedidosL);
+        pedidoE=(Spinner)view.findViewById(R.id.pedidoE);
+        PedidoOperations operaciones=new PedidoOperations(this.getContext());
+        operaciones.open();
+        List<Pedido> pedidos=operaciones.getAllPedidos();
+        operaciones.close();
+        ArrayAdapter<Pedido> adapter1=new ArrayAdapter<Pedido>(this.getContext(),android.R.layout.simple_list_item_1, pedidos);
+        pedidosL.setAdapter(adapter1);
+        List<String>codigosPedidos=new ArrayList<>();
+        for (int i=0; i<pedidos.size(); i++)
+        {
+            codigosPedidos.add(pedidos.get(i).getCodigo());
+        }
+        ArrayAdapter<String> adapter2=new ArrayAdapter<String>(this.getContext(),android.R.layout.simple_spinner_dropdown_item, codigosPedidos);
+        pedidoE.setAdapter(adapter2);
+        botonEliminarPedido=(Button)view.findViewById(R.id.botonEliminarPedido);
+        botonEliminarPedido.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String codigo=pedidoE.getSelectedItem().toString();
+                Pedido pedido=new Pedido(-1,codigo, "", -1);
+                eliminarPedido(pedido);
+            }
+        });
         return view;
     }
 
@@ -111,28 +132,37 @@ public class ThirdFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void mostrarSaldoCartera(){
-        try {
-            String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/mostrarSaldoCartera/" + Main2Activity.usuarioG.getDocumento();
+    public void eliminarPedido(Pedido pedido)
+    {
+        try{
+            //PARA GUARDAR EN SQLITE
+            PedidoOperations operaciones=new PedidoOperations(this.getContext());
+            operaciones.open();
+            operaciones.removePedido(pedido);
+            operaciones.close();
+            textSucesoEliminarPedido.setText("Pedido eliminado");
+            //PARA GUARDAR EN SERVIDOR
+            String url = "http://"+MainActivity.ip+"eliminarPedido/" + pedido.getCodigo();
             String response =new WSC().execute(url).get();
             Gson json=new Gson();
-            int saldo=json.fromJson(response, Integer.class);
-            if (saldo!=0) {
-                editSaldoCartera.setText(String.valueOf(saldo));
-            } else {
-                editSaldoCartera.setText("Error de saldo");
+            String message=json.fromJson(response, String.class);
+            operaciones=new PedidoOperations(this.getContext());
+            operaciones.open();
+            List<Pedido> pedidos=operaciones.getAllPedidos();
+            operaciones.close();
+            ArrayAdapter<Pedido> adapter1=new ArrayAdapter<Pedido>(this.getContext(),android.R.layout.simple_list_item_1, pedidos);
+            pedidosL.setAdapter(adapter1);
+            List<String>codigosPedidos=new ArrayList<>();
+            for (int i=0; i<pedidos.size(); i++)
+            {
+                codigosPedidos.add(pedidos.get(i).getCodigo());
             }
+            ArrayAdapter<String> adapter2=new ArrayAdapter<String>(this.getContext(),android.R.layout.simple_spinner_dropdown_item, codigosPedidos);
+            pedidoE.setAdapter(adapter2);
         }catch(Exception ex)
         {
             Log.d("Error", "Exception: "+ex.toString());
         }
-   }
-
-    public void mostrarCartera()
-    {
-        editDocumentoCartera.setText(Main2Activity.usuarioG.getDocumento());
-        editNombreCartera.setText(Main2Activity.usuarioG.getNombre());
-        editDireccionCartera.setText(Main2Activity.usuarioG.getDireccion());
-        editTelefonoCartera.setText(Main2Activity.usuarioG.getTelefono());
     }
+
 }

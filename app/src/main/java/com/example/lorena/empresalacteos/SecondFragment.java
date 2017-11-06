@@ -7,11 +7,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -34,16 +39,11 @@ public class SecondFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Button botonRegistrarFactura;
-    private EditText editCodigoFactura;
-    private EditText editNombreFactura;
-    private EditText editCantidadFactura;
-    private EditText editValoruFactura;
-    private EditText editValortFactura;
+    private Spinner pedidoM;
+    private Button botonModificarPedido;
+    private EditText editNombreMPedido;
+    private EditText editCantidadMPedido;
     private TextView textSucesoFactura;
-
-    public Factura facturaG=null;
-
 
     public SecondFragment() {
         // Required empty public constructor
@@ -81,25 +81,30 @@ public class SecondFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_second, container, false);
-        editCodigoFactura=(EditText) view.findViewById(R.id.editCodigoFactura);
-        editNombreFactura=(EditText)view.findViewById(R.id.editNombreFactura);
-        editCantidadFactura=(EditText)view.findViewById(R.id.editCantidadFactura);
-        editValoruFactura=(EditText)view.findViewById(R.id.editValoruFactura);
-        editValortFactura=(EditText)view.findViewById(R.id.editValortFactura);
+
+        editNombreMPedido=(EditText)view.findViewById(R.id.editNombreMPedido);
+        editCantidadMPedido=(EditText)view.findViewById(R.id.editCantidadMPedido);
         textSucesoFactura=(TextView) view.findViewById(R.id.textSucesoFactura);
-
-        editCodigoFactura.setText(FirstFragment.pedidoG.getCodigo());
-        //editNombreFactura.setText(FirstFragment.pedidoG.getNombre());
-        editCantidadFactura.setText(FirstFragment.pedidoG.getCantidad());
-
-        botonRegistrarFactura=(Button)view.findViewById(R.id.botonRegistrarFactura);
-        botonRegistrarFactura.setOnClickListener(new View.OnClickListener() {
+        PedidoOperations operaciones=new PedidoOperations(this.getContext());
+        operaciones.open();
+        List<Pedido> pedidos=operaciones.getAllPedidos();
+        List<String>codigosPedidos=new ArrayList<>();
+        for (int i=0; i<pedidos.size(); i++)
+        {
+            codigosPedidos.add(pedidos.get(i).getCodigo());
+        }
+        pedidoM=(Spinner)view.findViewById(R.id.pedidoM);
+        ArrayAdapter adapter=new ArrayAdapter(this.getContext(),android.R.layout.simple_spinner_dropdown_item,codigosPedidos);
+        pedidoM.setAdapter(adapter);
+        botonModificarPedido=(Button)view.findViewById(R.id.botonModificarPedido);
+        botonModificarPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int valoru=Integer.parseInt(editValoruFactura.getText().toString());
-                int valort=Integer.parseInt(editValortFactura.getText().toString());
-                Factura factura=new Factura(valoru,valort,Main2Activity.usuarioG.getDocumento());
-                registrarFactura(factura);
+                String codigo=pedidoM.getSelectedItem().toString();
+                String nombre=editNombreMPedido.getText().toString();
+                int cantidad=Integer.parseInt(editCantidadMPedido.getText().toString());
+                Pedido pedido=new Pedido(-1,codigo,nombre,cantidad);
+                modificarPedido(pedido);
             }
         });
         return view;
@@ -128,23 +133,30 @@ public class SecondFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void registrarFactura(Factura factura)
+    public void modificarPedido(Pedido pedido)
     {
         try {
-            if (factura.getValoru()==0 || factura.getValort()==0 || factura.getDocumentoUsuario().equals("")) {
+            if (pedido.getNombre().equals("") || pedido.getCantidad()==0) {
                 textSucesoFactura.setText("Error campos vacios");
             } else {
-
-                String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/registrarFactura/" + factura.getValoru() + "/" + factura.getValort()+"/"+factura.getDocumentoUsuario();
+                //PARA GUARDAR EN SQLITE
+                PedidoOperations operaciones=new PedidoOperations(this.getContext());
+                operaciones.open();
+                int success=operaciones.updatePedido(pedido);
+                operaciones.close();
+                if (success!=0)
+                {
+                    textSucesoFactura.setText("Pedido modificado");
+                }
+                else
+                {
+                    textSucesoFactura.setText("Error al modificar pedido");
+                }
+                //PARA GUARDAR EN SERVIDOR
+                String url = "http://"+MainActivity.ip+"modificarPedido/" + pedido.getCodigo() + "/" + pedido.getNombre()+"/"+pedido.getCantidad();
                 String response =new WSC().execute(url).get();
                 Gson json=new Gson();
                 String message=json.fromJson(response, String.class);
-                if (message.equals("Success")) {
-                    textSucesoFactura.setText("registrada: Factura");
-                    facturaG=factura;
-                } else {
-                    textSucesoFactura.setText("Error al registrar Factura");
-                }
             }
         }catch(Exception ex)
         {

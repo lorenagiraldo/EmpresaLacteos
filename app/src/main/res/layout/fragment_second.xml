@@ -7,126 +7,84 @@
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
+        android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FACTURA DE VENTA"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:id="@+id/text1" />
-
-    <TextView
-        android:text="Código del producto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/text1"
-        android:layout_toStartOf="@+id/text1"
-        android:layout_alignEnd="@+id/textView6" />
+        android:text="MODIFICAR PEDIDO" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/editNombreMPedido"
         android:inputType="text"
-        android:ems="10"
-        android:id="@+id/editCodigoFactura"
-        android:layout_alignBaseline="@+id/textView5"
-        android:layout_alignBottom="@+id/textView5"
-        android:layout_alignParentEnd="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/editNombreFactura"
-        android:layout_alignBaseline="@+id/textView6"
-        android:layout_alignBottom="@+id/textView6"
+        android:layout_above="@+id/editCantidadMPedido"
         android:layout_alignParentEnd="true"
-        android:inputType="text" />
+        android:layout_marginBottom="23dp" />
 
     <Button
-        android:text="GUARDAR"
+        android:id="@+id/botonModificarPedido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/botonRegistrarFactura"
+        android:text="MODIFICAR"
         android:layout_above="@+id/textSucesoFactura"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="22dp" />
+        android:layout_marginBottom="25dp" />
 
     <TextView
         android:text="N/A"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textSucesoFactura"
-        android:layout_marginBottom="24dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/editValortFactura"
-        android:inputType="number"
-        android:layout_above="@+id/botonRegistrarFactura"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="30dp" />
-
-    <TextView
-        android:text="Valor Total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView8"
-        android:layout_alignBaseline="@+id/editValortFactura"
-        android:layout_alignBottom="@+id/editValortFactura"
-        android:layout_toStartOf="@+id/text1" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="74dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editValoruFactura"
-        android:layout_above="@+id/editValortFactura"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="14dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/editCantidadFactura"
-        android:layout_alignBaseline="@+id/textView7"
-        android:layout_alignBottom="@+id/textView7"
+        android:id="@+id/editCantidadMPedido"
+        android:layout_centerVertical="true"
         android:layout_alignParentEnd="true" />
 
     <TextView
-        android:text="Cantidad Solicitada"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/textView7"
-        android:layout_marginBottom="28dp"
-        android:layout_above="@+id/editValoruFactura"
-        android:layout_alignEnd="@+id/textView14" />
-
-    <TextView
-        android:text="Nombre del producto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Nueva Cantidad"
+        android:layout_alignBaseline="@+id/editCantidadMPedido"
+        android:layout_alignBottom="@+id/editCantidadMPedido"
+        android:layout_alignParentStart="true" />
+
+    <TextView
         android:id="@+id/textView6"
-        android:layout_marginBottom="49dp"
-        android:layout_above="@+id/editCantidadFactura"
-        android:layout_alignStart="@+id/textView7" />
-
-    <TextView
-        android:text="Precio del producto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView14"
-        android:layout_alignBaseline="@+id/editValoruFactura"
-        android:layout_alignBottom="@+id/editValoruFactura"
-        android:layout_alignEnd="@+id/textView8" />
+        android:text="Nuevo Nombre"
+        android:layout_alignBaseline="@+id/editNombreMPedido"
+        android:layout_alignBottom="@+id/editNombreMPedido"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:id="@+id/pedidoM"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView12"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="23dp" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECCIONE UN PEDIDO"
+        android:layout_below="@+id/text1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp" />
 
 </RelativeLayout>

@@ -124,16 +124,23 @@ public class FirstFragment extends Fragment {
             if (pedido.getCodigo().equals("") || pedido.getCantidad()==0) {
                 textSucesoPedido.setText("Error campos vacios");
             } else {
-
-                String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/registrarPedido/" + pedido.getCodigo() + "/" + pedido.getNombre()+"/"+pedido.getCantidad();
+                //GUARDAR EN SQLITE
+                PedidoOperations operaciones=new PedidoOperations(this.getContext());
+                operaciones.open();
+                pedido=operaciones.addPedido(pedido);
+                operaciones.close();
+                if (pedido!=null) {
+                    textSucesoPedido.setText("registrado: "+pedido.getNombre());
+                } else {
+                    textSucesoPedido.setText("Error al registrar pedido");
+                }
+                //GUARDAR EN EL SERVIDOR
+                String url = "http://"+MainActivity.ip+"crearPedido/" + pedido.getCodigo() + "/" + pedido.getNombre()+"/"+pedido.getCantidad();
                 String response =new WSC().execute(url).get();
                 Gson json=new Gson();
                 String message=json.fromJson(response, String.class);
-                if (message.equals("Success")) {
-                    textSucesoPedido.setText("registrado: "+pedido.getNombre());
-                    Main2Activity.pedidoG=pedido;
-                } else {
-                    textSucesoPedido.setText("Error al registrar pedido");
+                if (message.equals("Fallo")) {
+                    EnterpriseActivity.pedidosCola.add(pedido);
                 }
             }
         }catch(Exception ex)

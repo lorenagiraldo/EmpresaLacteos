@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button inicio;
 
-    public static String ip="192.168.1.57:8080";
+    public static String ip="192.168.1.54:8080/ProyectoOdelech/rest/services/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,4 +29,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

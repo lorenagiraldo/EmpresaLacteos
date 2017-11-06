@@ -7,10 +7,10 @@
             android:title="Registrar pedido" />
         <item
             android:id="@+id/nav_fragment2"
-            android:title="Registrar factura" />
+            android:title="modificar pedido" />
         <item
             android:id="@+id/nav_fragment3"
-            android:title="Ver Cartera" />
+            android:title="Ver/Eliminar pedido" />
     </group>
 
 </menu>

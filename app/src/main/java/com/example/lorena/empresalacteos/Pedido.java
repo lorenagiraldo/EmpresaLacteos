@@ -11,6 +11,11 @@ public class Pedido {
     private String nombre;
     private int cantidad;
 
+    public Pedido()
+    {
+
+    }
+
     public Pedido(int id, String codigo, String nombre, int cantidad) {
         this.id = id;
         this.codigo = codigo;
@@ -28,8 +33,6 @@ public class Pedido {
     public String getNombre() {
         return nombre;
     }
-
-
 
     public int getId() {
         return id;
@@ -49,5 +52,10 @@ public class Pedido {
     }
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return codigo+" - "+nombre+" - "+String.valueOf(cantidad);
     }
 }

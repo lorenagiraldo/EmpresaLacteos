@@ -1,7 +1,11 @@
 package com.example.lorena.empresalacteos;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,11 +25,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static com.example.lorena.empresalacteos.R.id.textSucesoPedido;
 
 public class EnterpriseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    public static LinkedList<Pedido> pedidosCola=new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,16 +105,11 @@ public class EnterpriseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id==R.id.nav_fragment1)
-        {
+        if (id == R.id.nav_fragment1) {
             loadFirstFragment();
-        }
-        else if (id==R.id.nav_fragment2)
-        {
+        } else if (id == R.id.nav_fragment2) {
             loadSecondFragment();
-        }
-        else if(id==R.id.nav_fragment3)
-        {
+        } else if (id == R.id.nav_fragment3) {
             loadThirdFragment();
         }
 
@@ -111,31 +118,119 @@ public class EnterpriseActivity extends AppCompatActivity
         return true;
     }
 
-    public void loadFirstFragment()
-    {
-        FirstFragment firstFragment=new FirstFragment();
-        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+    public void loadFirstFragment() {
+        FirstFragment firstFragment = new FirstFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, firstFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    public void loadSecondFragment()
-    {
-        SecondFragment secondFragment=new SecondFragment();
-        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+    public void loadSecondFragment() {
+        SecondFragment secondFragment = new SecondFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, secondFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    public void loadThirdFragment()
-    {
-        ThirdFragment thirdFragment=new ThirdFragment();
-        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+    public void loadThirdFragment() {
+        ThirdFragment thirdFragment = new ThirdFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragmentContainer, thirdFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
+    private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo ni = manager.getActiveNetworkInfo();
+            onNetworkChange(ni);
+        }
+    };
+
+    private void onNetworkChange(NetworkInfo networkInfo) {
+        if (networkInfo != null)
+        {
+            if (networkInfo.getState() == NetworkInfo.State.CONNECTED)
+            {
+                try {
+                Log.d("INTERNET", "CONNECTED");
+                PedidoOperations operaciones=new PedidoOperations(this);
+                operaciones.open();
+                List<Pedido> pedidos=operaciones.getAllPedidos();
+                operaciones.close();
+                String url = "http://"+MainActivity.ip+"leerPedidos";
+                String  response = new WSC().execute(url).get();
+                Type type=new TypeToken<List<Pedido>>() {}.getType();
+                Gson json=new Gson();
+                List<Pedido> pedidosServer=json.fromJson(response,type);
+                for (int i=0; i<pedidos.size(); i++)
+                {
+                    boolean bandera=false;
+                    for (int j=0; j<pedidosServer.size(); j++){
+
+                        if (pedidos.get(i).getCodigo().equals(pedidosServer.get(j).getCodigo()))
+                        {
+                            if (!pedidos.get(i).getNombre().equals(pedidosServer.get(j).getNombre())||pedidos.get(i).getCantidad()!=pedidosServer.get(j).getCantidad()){
+                                url = "http://"+MainActivity.ip+"modificarPedido/" + pedidos.get(i).getCodigo() + "/" + pedidos.get(i).getNombre()+"/"+pedidos.get(i).getCantidad();
+                                response =new WSC().execute(url).get();
+                                json=new Gson();
+                                String message=json.fromJson(response, String.class);
+                                bandera=true;
+                                break;
+                            }
+                            else{
+                                bandera=true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!bandera){
+                        url = "http://"+MainActivity.ip+"crearPedido/" + pedidos.get(i).getCodigo() + "/" + pedidos.get(i).getNombre()+"/"+pedidos.get(i).getCantidad();
+                        response =new WSC().execute(url).get();
+                        json=new Gson();
+                        String message=json.fromJson(response, String.class);
+                    }
+                }
+                for (int i=0; i<pedidosServer.size(); i++) {
+                    boolean bandera = false;
+                    for (int j = 0; j < pedidos.size(); j++) {
+                        if (pedidosServer.get(i).getCodigo().equals(pedidos.get(j).getCodigo())){
+                            bandera=true;
+                            break;
+                        }
+                    }
+                    if (!bandera)
+                    {
+                        url = "http://"+MainActivity.ip+"eliminarPedido/" + pedidosServer.get(i).getCodigo();
+                        response =new WSC().execute(url).get();
+                        json=new Gson();
+                        String message=json.fromJson(response, String.class);
+                    }
+                }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                Log.d("INTERNET", "DISCONNECTED");
+            }
+        }
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+    @Override public void onPause()
+    {
+        unregisterReceiver(networkStateReceiver);
+        super.onPause();
+    }
 }

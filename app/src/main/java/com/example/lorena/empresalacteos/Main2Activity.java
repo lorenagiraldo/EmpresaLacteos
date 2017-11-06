@@ -13,12 +13,10 @@ import com.google.gson.Gson;
 
 public class Main2Activity extends AppCompatActivity {
 
-    private EditText editNombreUsuario;
-    private EditText editDocumentoUsuario;
-    private EditText editDireccionUsuario;
-    private EditText editTelefonoUsuario;
+    private EditText editCorreoUsuario;
+    private EditText editPasswordUsuario;
     private TextView textSucesoUsuario;
-    private Button botonRegistrarUsuario;
+    private Button botonIniciarSesion;
     public static Usuario usuarioG=null;
     public static Pedido pedidoG=null;
 
@@ -26,48 +24,43 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        editNombreUsuario=(EditText) findViewById(R.id.editNombreUsuario);
-        editDocumentoUsuario=(EditText) findViewById(R.id.editDocumentoUsuario);
-        editDireccionUsuario=(EditText) findViewById(R.id.editDireccionUsuario);
-        editTelefonoUsuario=(EditText) findViewById(R.id.editTelefonoUsuario);
+        editCorreoUsuario=(EditText) findViewById(R.id.editCorreoUsuario);
+        editPasswordUsuario=(EditText) findViewById(R.id.editPasswordUsuario);
         textSucesoUsuario=(TextView) findViewById(R.id.textSucesoUsuario);
-        botonRegistrarUsuario=(Button)findViewById(R.id.botonRegistrarUsuario);
-        botonRegistrarUsuario.setOnClickListener(new View.OnClickListener() {
+        botonIniciarSesion=(Button)findViewById(R.id.botonIniciarSesion);
+        botonIniciarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nombre=editNombreUsuario.getText().toString();
-                String documento=editDocumentoUsuario.getText().toString();
-                String direccion=editDireccionUsuario.getText().toString();
-                String telefono=editTelefonoUsuario.getText().toString();
-                Usuario usuario=new Usuario(-1,documento,nombre, direccion, telefono);
-                registrarUsuario(usuario);
+                String correo=editCorreoUsuario.getText().toString();
+                String password=editPasswordUsuario.getText().toString();
+                Usuario usuario=new Usuario(-1,correo,password);
+                iniciarSesion(usuario);
             }
         });
     }
 
-    private void registrarUsuario(Usuario usuario)
+    private void iniciarSesion(Usuario usuario)
     {
         try {
-            if (usuario.getDocumento().equals("") || usuario.getNombre().equals("")) {
+            if (usuario.getCorreoUsuario().equals("") || usuario.getPasswordUsuario().equals("")) {
                 textSucesoUsuario.setText("Error campos vacios");
             } else {
-                Log.d("Error",usuario.getDocumento());
-                Log.d("Error",usuario.getNombre());
-                Log.d("Error",usuario.getDireccion());
-                Log.d("Error",usuario.getTelefono());
-                String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/registrarUsuario/" + usuario.getDocumento() + "/" + usuario.getNombre()+"/"+usuario.getDireccion()+"/"+usuario.getTelefono();
-                //String url = "http://"+MainActivity.ip+"/EmpresaLacteosServidor/rest/services/registrarUsuario/5412/JORGE/AVENIDANORTE/87452145";
+                String url = "http://"+MainActivity.ip+"iniciarSesion/" + usuario.getCorreoUsuario() + "/" + usuario.getPasswordUsuario();
+
                 String response =new WSC().execute(url).get();
                 Gson json=new Gson();
                 String message=json.fromJson(response, String.class);
-                if (message.equals("Success")) {
-                    textSucesoUsuario.setText("registrado: "+usuario.getNombre());
+                if (message.equals("Exito")) {
+                    textSucesoUsuario.setText("registrado: "+usuario.getCorreoUsuario());
                     usuarioG=usuario;
                     Intent i=new Intent(Main2Activity.this,EnterpriseActivity.class);
                     startActivity(i);
                 } else {
                     textSucesoUsuario.setText("Error al registrar usuario");
                 }
+
+            Intent i=new Intent(Main2Activity.this,EnterpriseActivity.class);
+            startActivity(i);
             }
         }catch(Exception ex)
         {

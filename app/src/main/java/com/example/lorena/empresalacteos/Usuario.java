@@ -6,57 +6,39 @@ package com.example.lorena.empresalacteos;
 
 public class Usuario {
 
-    private int id;
-    private String documento;
-    private String nombre;
-    private String direccion;
-    private String telefono;
+    private int idUsuario;
+    private String correoUsuario;
+    private String passwordUsuario;
 
-    public Usuario(int id, String documento, String nombre, String direccion, String telefono) {
-        this.id = id;
-        this.documento = documento;
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
+    public Usuario(int idUsuario, String correoUsuario, String passwordUsuario)
+    {
+        this.idUsuario=idUsuario;
+        this.correoUsuario=correoUsuario;
+        this.passwordUsuario=passwordUsuario;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public String getDocumento() {
-        return documento;
+    public String getCorreoUsuario() {
+        return correoUsuario;
     }
 
-    public int getId() {
-        return id;
+    public String getPasswordUsuario() {
+        return passwordUsuario;
     }
 
-    public String getNombre() {
-        return nombre;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public void setCorreoUsuario(String correoUsuario) {
+        this.correoUsuario = correoUsuario;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setPasswordUsuario(String passwordUsuario) {
+        this.passwordUsuario = passwordUsuario;
     }
 }
+
